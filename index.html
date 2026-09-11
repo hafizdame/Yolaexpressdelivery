@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOLA EXPRESS DELIVERY — Order Online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#DCEAFB;
+    --navy:#0F1E3D;
+    --navy-3:#22386B;
+    --orange:#FF6432;
+    --orange-2:#E5551F;
+    --yellow:#FFC736;
+    --skyfill:#D9E9FC;
+    --white:#FFFFFF;
+    --ink:#101B31;
+    --muted:#64748B;
+    --line:#E1E9F6;
+    --ok:#2E9E5B;
+    --danger:#D9483F;
+    --radius-lg:22px;
+    --radius:16px;
+    --shadow-sm: 0 10px 26px -14px rgba(15,30,61,0.25);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;}
+  h1,h2,h3,.display{font-family:'Archivo',sans-serif;font-weight:800;letter-spacing:-0.01em;margin:0;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;padding:14px 22px;font-weight:700;font-size:15px;}
+  .btn-dark{background:var(--navy);color:#fff;}
+  .btn-orange{background:var(--orange);color:#fff;}
+  .btn-orange:hover{background:var(--orange-2);}
+  .btn-white{background:#fff;color:var(--navy);border:1.5px solid var(--line);}
+  .btn-block{width:100%;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+
+  /* header */
+  .topbar{position:sticky;top:0;z-index:40;background:rgba(220,234,251,0.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(15,30,61,0.06);}
+  .topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brandmark{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;border:1px solid rgba(15,30,61,0.08);}
+  .brandmark img{width:100%;height:100%;object-fit:cover;display:block;}
+  .brandtext{font-family:'Archivo';font-weight:800;font-size:14px;line-height:1.15;letter-spacing:.01em;}
+  .brandtext .l2{font-family:'Inter';font-weight:700;font-size:9px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;}
+  .topicons{display:flex;gap:8px;}
+  .icon-btn{width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--navy);}
+  .icon-btn.wa{background:#E9FBF0;border-color:#CFF3DC;}
+
+  /* hero */
+  .hero{padding:34px 0 8px;text-align:center;}
+  .hero h1{font-size:28px;line-height:1.2;color:var(--navy);}
+  .hero p{font-size:14.5px;color:var(--muted);margin-top:8px;}
+  @media (max-width:480px){ .hero h1{font-size:23px;} }
+
+  /* service grid */
+  .svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:22px 0 8px;}
+  @media (min-width:600px){ .svc-grid{grid-template-columns:repeat(3,1fr);} }
+  .svc-card{background:#fff;border-radius:16px;padding:18px 14px;box-shadow:var(--shadow-sm);border:2px solid transparent;text-align:left;display:flex;flex-direction:column;gap:8px;}
+  .svc-card.selected{border-color:var(--orange);background:#FFF3ED;}
+  .svc-card .icon-badge{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .svc-card .nm{font-weight:700;font-size:13.5px;}
+  .svc-card .pr{font-size:11.5px;color:var(--muted);}
+  .svc-card.disabled{opacity:.4;}
+
+  /* order card */
+  .order-card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:26px;margin:20px 0 40px;}
+  @media (max-width:480px){ .order-card{padding:20px;} }
+  .order-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .order-head .sel{display:flex;align-items:center;gap:10px;}
+  .order-head .icon-badge{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .order-head .nm{font-weight:700;font-size:15px;}
+  .order-head .pr{font-size:12px;color:var(--muted);}
+  .change-link{background:none;border:none;font-size:12.5px;font-weight:700;color:var(--orange);}
+
+  .field{margin-bottom:15px;}
+  .field label{display:block;font-size:12.5px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .field .req{color:var(--orange);}
+  .field input, .field textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:12px 13px;font-size:14px;color:var(--ink);background:#FAFBFD;}
+  .field input:focus, .field textarea:focus{outline:none;border-color:var(--navy);background:#fff;}
+  .field textarea{resize:vertical;min-height:66px;}
+  .field-err{border-color:var(--danger) !important;}
+  .errtext{color:var(--danger);font-size:11.5px;margin-top:5px;}
+  .field-grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
+  @media (max-width:460px){ .field-grid2{grid-template-columns:1fr;} }
+
+  .empty-hint{text-align:center;color:var(--muted);font-size:13.5px;padding:10px 0 4px;}
+
+  /* confirmation */
+  .confirm-box{text-align:center;padding:6px 0;}
+  .confirm-icon{width:56px;height:56px;border-radius:50%;background:var(--yellow);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;}
+  .confirm-title{font-size:22px;}
+  .confirm-sub{color:var(--muted);font-size:14px;margin-top:10px;}
+  .booking-id-box{background:var(--skyfill);border-radius:13px;padding:16px;margin:20px 0;text-align:center;}
+  .booking-id-box .lbl{font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;}
+  .booking-id-box .val{font-family:'Archivo';font-weight:900;font-size:19px;color:var(--navy);margin-top:4px;}
+  .confirm-btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+
+  /* track (tucked away) */
+  .track-toggle{text-align:center;padding:0 0 10px;}
+  .track-toggle button{background:none;border:none;font-size:12.5px;color:var(--muted);text-decoration:underline;font-weight:600;}
+  .track-panel{background:#fff;border-radius:16px;box-shadow:var(--shadow-sm);padding:20px;margin-bottom:30px;}
+  .track-result{background:var(--skyfill);border-radius:12px;padding:13px 15px;margin-top:14px;display:flex;align-items:center;gap:10px;}
+  .track-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .track-dot.pending{background:#D98A00;}
+  .track-dot.progress{background:#2554C7;}
+  .track-dot.done{background:var(--ok);}
+  .track-dot.cancelled{background:var(--danger);}
+  .track-status{font-weight:700;font-size:13.5px;}
+  .track-route{font-size:12px;color:var(--muted);margin-top:2px;}
+
+  /* footer */
+  .footer{text-align:center;padding:10px 0 90px;}
+  .footer .phones{font-size:12.5px;color:var(--muted);margin-bottom:6px;}
+  .footer button{background:none;border:none;color:var(--muted);font-size:11.5px;text-decoration:underline;}
+
+  .fab-wa{position:fixed;bottom:20px;right:20px;background:var(--orange);color:#fff;display:flex;align-items:center;gap:9px;padding:14px 20px;border-radius:40px;box-shadow:0 14px 30px -10px rgba(255,100,50,0.55);font-weight:700;font-size:13.5px;z-index:60;}
+  @media (max-width:520px){ .fab-wa span.lbl{display:none;} .fab-wa{padding:14px;} }
+
+  .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 20px;border-radius:11px;font-size:13px;font-weight:600;z-index:200;box-shadow:var(--shadow-sm);max-width:90%;text-align:center;}
+  .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:12px;color:var(--muted);font-size:13px;}
+  .spinner{width:26px;height:26px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--orange);animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ============ ADMIN (unchanged, compact) ============ */
+  .admin-shell{min-height:100vh;background:var(--bg);}
+  .admin-top{background:var(--navy);color:#fff;padding:16px 0;position:sticky;top:0;z-index:30;}
+  .admin-top .wrap{display:flex;justify-content:space-between;align-items:center;max-width:900px;}
+  .admin-wrap{max-width:900px;margin:0 auto;padding:0 20px;}
+  .admin-tabs{display:flex;gap:8px;overflow-x:auto;padding:16px 0 0;}
+  .atab{flex-shrink:0;padding:9px 16px;border-radius:22px;border:1px solid var(--line);background:#fff;font-size:12.5px;font-weight:700;color:var(--muted);}
+  .atab.active{background:var(--navy);color:var(--yellow);border-color:var(--navy);}
+  .stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px 0 4px;}
+  @media (max-width:600px){ .stat-grid{grid-template-columns:1fr 1fr;} }
+  .stat-card{background:#fff;border-radius:14px;padding:16px;box-shadow:var(--shadow-sm);}
+  .stat-card .num{font-family:'Archivo';font-weight:900;font-size:25px;}
+  .stat-card .lbl{font-size:11.5px;color:var(--muted);font-weight:600;margin-top:2px;}
+  .b-row{background:#fff;border-radius:14px;padding:15px 16px;margin-bottom:10px;box-shadow:var(--shadow-sm);cursor:pointer;}
+  .b-row .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;}
+  .b-row .idtxt{font-family:'Archivo';font-weight:800;font-size:12.5px;color:var(--navy);}
+  .b-row .meta{font-size:12px;color:var(--muted);margin-top:2px;}
+  .b-row .who{font-size:13px;font-weight:600;margin-top:6px;}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;}
+  .badge-pending{background:#FFF1DE;color:#D98A00;}
+  .badge-progress{background:#E4EDFF;color:#2554C7;}
+  .badge-done{background:#E4F6EA;color:var(--ok);}
+  .badge-cancelled{background:#FBE5E3;color:var(--danger);}
+  .empty{text-align:center;padding:44px 20px;color:var(--muted);}
+  .empty .em{font-size:30px;margin-bottom:8px;}
+  .modal-bg{position:fixed;inset:0;background:rgba(15,30,61,0.55);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;}
+  .modal{background:#fff;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;border-radius:20px;padding:24px 22px;}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .modal-close{background:var(--bg);border:none;width:30px;height:30px;border-radius:50%;font-size:16px;color:var(--muted);}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;}
+  .summary-row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px;}
+  .summary-row:last-child{border-bottom:none;}
+  .summary-row .k{color:var(--muted);}
+  .summary-row .v{font-weight:600;text-align:right;}
+  .status-select-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+  .stbtn{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px 6px;font-size:11.5px;font-weight:700;color:var(--muted);}
+  .stbtn.active{border-color:var(--navy);background:var(--navy);color:var(--yellow);}
+  .pin-wrap{padding:70px 24px;text-align:center;}
+  .pin-dots{display:flex;justify-content:center;gap:12px;margin:24px 0;}
+  .pin-dots .d{width:14px;height:14px;border-radius:50%;border:2px solid var(--navy);}
+  .pin-dots .d.filled{background:var(--navy);}
+  .pinpad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:260px;margin:0 auto;}
+  .pinkey{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;font-size:18px;font-weight:700;}
+  .svc-admin-row{background:#fff;border-radius:14px;padding:16px;margin-bottom:10px;box-shadow:var(--shadow-sm);}
+  .toggle{position:relative;width:42px;height:24px;border-radius:20px;background:var(--line);border:none;flex-shrink:0;}
+  .toggle.on{background:var(--ok);}
+  .toggle .knob{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.15s;}
+  .toggle.on .knob{left:20px;}
+  .msg-row{background:#fff;border-radius:14px;padding:15px 16px;margin-bottom:10px;box-shadow:var(--shadow-sm);}
+  .msg-row .nm{font-weight:700;font-size:13.5px;}
+  .msg-row .dt{font-size:11px;color:var(--muted);}
+  .msg-row .bd{font-size:13px;margin-top:6px;color:var(--ink);}
+  .outline-light{background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.25);}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+<div id="app"><div class="loading-screen"><div class="spinner"></div><div>Loading Yola Express Delivery…</div></div></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------------- CONFIG ---------------- */
+const LOGO_URI = "data:image/jpeg;base64,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";
+/* ====== FILL THESE IN FROM YOUR EMAILJS ACCOUNT ====== */
+const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
+const COMPANY_EMAIL = "yolaexpressdelivery@gmail.com";
+/* ======================================================== */
+
+/* ====== FILL THESE IN FROM YOUR SUPABASE PROJECT (Settings -> API) ====== */
+const SUPABASE_URL = "https://bhlvkzyenzsrkwutmvtb.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJobHZrenllbnpzcmt3dXRtdnRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkxMTY0MzUsImV4cCI6MjEwNDY5MjQzNX0.j4mpEsQmpy8CZtoIr_lgb_Me3i49REw_CkiCdI8C15M";
+/* ========================================================================= */
+const PHONE_1 = "07010693869";
+const PHONE_2 = "08129304238";
+const WA_NUMBER = "2347010693869";
+const STATUS_FLOW = ["Pending","Confirmed","Rider Assigned","Picked Up","In Transit","Delivered","Completed"];
+const DEFAULT_SETTINGS = { contactEmail:"yolaexpressdelivery@gmail.com", adminPin:"1234" };
+const ICON_BG = ["#FFC736","#0F1E3D","#D9E9FC","#FF6432"];
+function iconColorFor(bg){ return (bg==="#0F1E3D"||bg==="#FF6432") ? "#FFFFFF" : "#0F1E3D"; }
+
+const SVGICON = {
+  fork:'<path d="M6 3v7a2 2 0 0 0 2 2v9M6 3v7M9 3v7M12 3v18M17 3c-2 0-3 2-3 5s1 4 3 4 3-2 3-5-1-4-3-4Z"/>',
+  box:'<path d="M12 3 3 7.5 12 12l9-4.5L12 3Z"/><path d="M3 7.5V17l9 4.5 9-4.5V7.5"/><path d="M12 12v9.5"/>',
+  bag:'<path d="M6 8h12l1 12H5L6 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  fuel:'<path d="M4 21V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v15"/><path d="M4 11h10"/><path d="M14 8h2l3 3v6a1.5 1.5 0 0 1-3 0v-1a1 1 0 0 0-1-1h-1"/><path d="M3 21h13"/>',
+  truck:'<path d="M2 8h11v9H2z"/><path d="M13 11h4l4 3v3h-8z"/><circle cx="6.5" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/>',
+  card:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.8 5.7 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3Z"/>',
+  phone:'<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2C10.5 21 3 13.5 3 6a2 2 0 0 1 2-2Z"/>',
+  wa:'<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.5A8.5 8.5 0 1 1 21 11.5Z"/><path d="M8.5 9.5c.3 3 2.7 5.4 5.7 5.7"/>',
+  check:'<path d="M5 12.5 10 17l9-10"/>',
+  send:'<path d="m3 11 18-8-8 18-2-8-8-2Z"/>',
+  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+};
+function ic(name, size, color, stroke){
+  size = size||20; stroke = stroke||1.8;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color||'currentColor'}" stroke-width="${stroke}" stroke-linecap="round" stroke-linejoin="round">${SVGICON[name]||""}</svg>`;
+}
+
+const DEFAULT_SERVICES = [
+  {id:"food", icon:"fork", name:"Food Delivery", pricing:{type:"fixed", amount:500}, active:true},
+  {id:"package", icon:"box", name:"Package Delivery", pricing:{type:"fixed", amount:800}, active:true},
+  {id:"errand", icon:"bag", name:"Errand Services", pricing:{type:"quote"}, active:true},
+  {id:"gas", icon:"fuel", name:"Gas Refilling", pricing:{type:"quote", label:"Call for price"}, active:true},
+  {id:"bulk", icon:"truck", name:"Bulk Delivery", pricing:{type:"quote", label:"We quote you"}, active:true},
+  {id:"pod", icon:"card", name:"Pay on Delivery", pricing:{type:"fixed", amount:600}, active:true},
+  {id:"interstate", icon:"globe", name:"Inter-State Delivery", pricing:{type:"quote"}, active:true}
+];
+
+let STATE = {
+  view:"site", loaded:false, settings:null, services:null, bookings:[], messages:[],
+  adminAuthed:false, adminPinDraft:"", adminTab:"dashboard",
+  selectedService:null, order:null, confirmedBooking:null,
+  showTrack:false, trackResult:null, trackError:"",
+  modal:null, toast:null,
+};
+let orderErrors = {};
+
+/* ---------------- EMAIL NOTIFICATIONS (EmailJS) ---------------- */
+const EMAIL_CONFIGURED = EMAILJS_SERVICE_ID.indexOf("YOUR_EMAILJS")!==0 && EMAILJS_TEMPLATE_ID.indexOf("YOUR_EMAILJS")!==0 && EMAILJS_PUBLIC_KEY.indexOf("YOUR_EMAILJS")!==0;
+if(EMAIL_CONFIGURED && window.emailjs){
+  try{ emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }); }catch(e){ console.error("emailjs init failed", e); }
+}
+async function sendOrderEmail(b){
+  if(!EMAIL_CONFIGURED || !window.emailjs) return;
+  const svc = svcById(b.service);
+  const params = {
+    booking_id: b.id,
+    service_name: svc ? svc.name : b.service,
+    customer_name: b.customer.name,
+    customer_phone: b.customer.phone,
+    pickup_address: b.pickup.address,
+    delivery_address: b.delivery.address,
+    receiver_name: b.delivery.receiverName,
+    receiver_phone: b.delivery.receiverPhone,
+    notes: b.details.description || "—",
+    placed_at: fmtDate(b.createdAt),
+    to_email: COMPANY_EMAIL
+  };
+  try{ await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, params); }
+  catch(e){ console.error("order email failed to send", e); }
+}
+
+/* ---------------- STORAGE (Supabase) ---------------- */
+let STORAGE_OK = true;
+function sbHeaders(extra){
+  return Object.assign({ apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }, extra||{});
+}
+async function storageGet(key, fallback){
+  try{
+    const url = `${SUPABASE_URL}/rest/v1/yex_store?k=eq.${encodeURIComponent(key)}&select=v`;
+    const res = await fetch(url, { headers: sbHeaders() });
+    if(!res.ok){ STORAGE_OK=false; return fallback; }
+    const rows = await res.json();
+    STORAGE_OK = true;
+    return (rows && rows.length && rows[0].v!==undefined) ? rows[0].v : fallback;
+  }catch(e){ STORAGE_OK=false; return fallback; }
+}
+async function storageSet(key, value){
+  try{
+    const url = `${SUPABASE_URL}/rest/v1/yex_store`;
+    const res = await fetch(url, {
+      method:"POST",
+      headers: sbHeaders({ "Content-Type":"application/json", "Prefer":"resolution=merge-duplicates,return=minimal" }),
+      body: JSON.stringify({ k:key, v:value })
+    });
+    STORAGE_OK = res.ok;
+    return res.ok;
+  }catch(e){ STORAGE_OK=false; console.error("storage set failed", key, e); return false; }
+}
+async function loadAll(){
+  if(SUPABASE_URL.indexOf("YOUR_SUPABASE")===0 || SUPABASE_ANON_KEY.indexOf("YOUR_SUPABASE")===0){
+    STATE.settings = DEFAULT_SETTINGS; STATE.services = DEFAULT_SERVICES; STATE.bookings=[]; STATE.messages=[];
+    STATE.loaded = true; STATE.configWarning = true;
+    render();
+    return;
+  }
+  const [settings, services, bookings, messages] = await Promise.all([
+    storageGet("yex-settings", DEFAULT_SETTINGS),
+    storageGet("yex-services", DEFAULT_SERVICES),
+    storageGet("yex-bookings", []),
+    storageGet("yex-messages", [])
+  ]);
+  STATE.settings = Object.assign({}, DEFAULT_SETTINGS, settings);
+  STATE.services = (services && services.length) ? services : DEFAULT_SERVICES;
+  STATE.bookings = bookings || [];
+  STATE.messages = messages || [];
+  STATE.loaded = true;
+  render();
+}
+async function persistBookings(){ await storageSet("yex-bookings", STATE.bookings); }
+async function persistServices(){ await storageSet("yex-services", STATE.services); }
+async function persistSettings(){ await storageSet("yex-settings", STATE.settings); }
+
+/* ---------------- UTIL ---------------- */
+function pad(n){ return n<10?"0"+n:""+n; }
+function genBookingId(){
+  const d = new Date();
+  return `YED-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Math.floor(10000+Math.random()*89999)}`;
+}
+function fmtDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"}) + " · " + d.toLocaleTimeString(undefined,{hour:"2-digit",minute:"2-digit"});
+}
+function escapeHtml(s){ if(s===undefined||s===null) return ""; return String(s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function svcById(id){ return STATE.services.find(s=>s.id===id); }
+function priceLabel(svc){
+  if(!svc) return "";
+  if(svc.pricing.type==="fixed") return `From ₦${svc.pricing.amount.toLocaleString()}`;
+  return svc.pricing.label || "Request a quote";
+}
+function statusBadgeClass(status){
+  if(status==="Cancelled") return "badge-cancelled";
+  if(status==="Completed"||status==="Delivered") return "badge-done";
+  if(status==="Pending") return "badge-pending";
+  return "badge-progress";
+}
+function trackDotClass(status){
+  if(status==="Cancelled") return "cancelled";
+  if(status==="Completed"||status==="Delivered") return "done";
+  if(status==="Pending") return "pending";
+  return "progress";
+}
+function showToast(msg){ STATE.toast = msg; render(); setTimeout(()=>{ STATE.toast=null; render(); }, 2200); }
+function waLink(prefill){ return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(prefill||"Hello Yola Express, I would like to make a booking.")}`; }
+
+function newOrder(){ return {name:"",phone:"",pickup:"",delivery:"",receiverName:"",receiverPhone:"",notes:""}; }
+function selectService(id){
+  STATE.selectedService = id;
+  STATE.order = newOrder();
+  STATE.confirmedBooking = null;
+  orderErrors = {};
+  render();
+  setTimeout(()=>{ const el = document.getElementById("order-card"); if(el) el.scrollIntoView({behavior:"smooth", block:"start"}); }, 30);
+}
+function validateOrder(){
+  const o = STATE.order; const e = {};
+  if(!o.name.trim()) e.name = "Your name is required.";
+  if(!o.phone.trim()) e.phone = "Your phone number is required.";
+  if(!o.pickup.trim()) e.pickup = "Pickup address is required.";
+  if(!o.delivery.trim()) e.delivery = "Delivery address is required.";
+  if(!o.receiverName.trim()) e.receiverName = "Receiver name is required.";
+  if(!o.receiverPhone.trim()) e.receiverPhone = "Receiver phone is required.";
+  return e;
+}
+async function submitOrder(){
+  orderErrors = validateOrder();
+  if(Object.keys(orderErrors).length){ render(); return; }
+  const o = STATE.order;
+  const id = genBookingId();
+  const booking = {
+    id, service:STATE.selectedService, createdAt:new Date().toISOString(),
+    customer:{name:o.name, phone:o.phone, email:"", whatsapp:"", business:""},
+    pickup:{address:o.pickup, area:"", landmark:"", contactName:"", contactPhone:""},
+    delivery:{receiverName:o.receiverName, receiverPhone:o.receiverPhone, address:o.delivery, area:"", landmark:""},
+    details:{description:o.notes, qty:"", preferredDate:"", preferredTime:"", instructions:"", itemValue:""},
+    status:"Pending", notes:[], rider:""
+  };
+  STATE.bookings.unshift(booking);
+  await persistBookings();
+  sendOrderEmail(booking); // fire-and-forget, doesn't block confirmation
+  STATE.confirmedBooking = booking;
+  render();
+}
+function newOrderReset(){ STATE.selectedService=null; STATE.order=null; STATE.confirmedBooking=null; orderErrors={}; render(); window.scrollTo({top:0,behavior:"smooth"}); }
+
+/* ================= RENDER: SHELL ================= */
+function render(){
+  const app = document.getElementById("app");
+  if(!STATE.loaded){ app.innerHTML = `<div class="loading-screen"><div class="spinner"></div><div>Loading Yola Express Delivery…</div></div>`; return; }
+  if(STATE.view==="admin"){ app.innerHTML = renderAdmin(); attachAdminHandlers(); return; }
+
+  app.innerHTML = `
+  <div class="topbar"><div class="wrap topbar-inner">
+    <div class="brand"><div class="brandmark"><img src="${LOGO_URI}" alt="Yola Express Delivery logo"></div><div class="brandtext">YOLA EXPRESS<div class="l2">Delivery</div></div></div>
+    <div class="topicons">
+      <a class="icon-btn" href="tel:${PHONE_1}" title="Call us">${ic('phone',15)}</a>
+      <a class="icon-btn wa" href="${waLink()}" target="_blank" rel="noopener" title="WhatsApp us">${ic('wa',15,'#1D9E52')}</a>
+    </div>
+  </div></div>
+
+  ${STATE.configWarning ? `<div class="wrap" style="padding-top:16px;"><div style="background:#FFF1DE;border:1.5px solid #FFD79A;border-radius:14px;padding:14px 16px;font-size:13px;color:#7A4B00;"><strong>Storage not connected yet.</strong> Add your Supabase Project URL and anon key near the top of the script (search for SUPABASE_URL) so orders save properly. Right now nothing entered here will be saved.</div></div>` : ""}
+
+  <div class="wrap">
+    <div class="hero">
+      <h1>What do you need delivered?</h1>
+      <p>Pick a service and place your order in under a minute — no account needed.</p>
+    </div>
+
+    ${renderServiceGrid()}
+
+    ${STATE.selectedService ? `<div id="order-card">${renderOrderCard()}</div>` : `<div class="empty-hint">Choose a service above to get started ↑</div>`}
+
+    ${renderTrackSection()}
+
+    <div class="footer">
+      <div class="phones">${PHONE_1} · ${PHONE_2}</div>
+      ${STATE.settings.contactEmail ? `<div class="phones"><a href="mailto:${STATE.settings.contactEmail}" style="text-decoration:underline;">${escapeHtml(STATE.settings.contactEmail)}</a></div>` : ""}
+      <button data-nav="admin">Staff login</button>
+    </div>
+  </div>
+
+  <a class="fab-wa" href="${waLink()}" target="_blank" rel="noopener">${ic('wa',19,'#fff')}<span class="lbl">WhatsApp Us</span></a>
+  ${STATE.toast ? `<div class="toast">${escapeHtml(STATE.toast)}</div>` : ""}
+  `;
+  attachHandlers();
+}
+
+function renderServiceGrid(){
+  return `<div class="svc-grid">
+    ${STATE.services.map((s,i)=>{
+      const bg = ICON_BG[i%4]; const col = iconColorFor(bg);
+      const sel = STATE.selectedService===s.id;
+      if(!s.active) return `<div class="svc-card disabled"><div class="icon-badge" style="background:${bg};">${ic(s.icon,18,col)}</div><div class="nm">${escapeHtml(s.name)}</div><div class="pr">Unavailable</div></div>`;
+      return `<button class="svc-card ${sel?'selected':''}" data-selectsvc="${s.id}">
+        <div class="icon-badge" style="background:${bg};">${ic(s.icon,18,col)}</div>
+        <div class="nm">${escapeHtml(s.name)}</div>
+        <div class="pr">${priceLabel(s)}</div>
+      </button>`;
+    }).join("")}
+  </div>`;
+}
+
+function field(label, name, value, opts){
+  opts = opts||{};
+  const err = opts.err; const req = opts.req?`<span class="req">*</span>`:"";
+  if(opts.type==="textarea"){
+    return `<div class="field"><label>${label} ${req}</label><textarea data-field="${name}" placeholder="${opts.ph||""}" class="${err?'field-err':''}">${escapeHtml(value)}</textarea>${err?`<div class="errtext">${err}</div>`:""}</div>`;
+  }
+  return `<div class="field"><label>${label} ${req}</label><input data-field="${name}" type="${opts.type||'text'}" value="${escapeHtml(value)}" placeholder="${opts.ph||""}" class="${err?'field-err':''}">${err?`<div class="errtext">${err}</div>`:""}</div>`;
+}
+
+function renderOrderCard(){
+  const svc = svcById(STATE.selectedService);
+  const bg = ICON_BG[STATE.services.indexOf(svc)%4]; const col = iconColorFor(bg);
+
+  if(STATE.confirmedBooking) return `<div class="order-card">${renderConfirmation()}</div>`;
+
+  const o = STATE.order;
+  return `<div class="order-card">
+    <div class="order-head">
+      <div class="sel"><div class="icon-badge" style="background:${bg};">${ic(svc.icon,17,col)}</div><div><div class="nm">${escapeHtml(svc.name)}</div><div class="pr">${priceLabel(svc)}</div></div></div>
+      <button class="change-link" id="change-svc">Change service</button>
+    </div>
+    <div class="field-grid2">${field("Your name","name",o.name,{req:true, err:orderErrors.name})}${field("Your phone","phone",o.phone,{req:true, err:orderErrors.phone, type:"tel"})}</div>
+    ${field("Pickup address","pickup",o.pickup,{req:true, err:orderErrors.pickup, ph:"Where should we pick this up?"})}
+    ${field("Delivery address","delivery",o.delivery,{req:true, err:orderErrors.delivery, ph:"Where is it going?"})}
+    <div class="field-grid2">${field("Receiver name","receiverName",o.receiverName,{req:true, err:orderErrors.receiverName})}${field("Receiver phone","receiverPhone",o.receiverPhone,{req:true, err:orderErrors.receiverPhone, type:"tel"})}</div>
+    ${field("Anything we should know?","notes",o.notes,{type:"textarea", ph:"Item details, preferred time, instructions (optional)"})}
+    <button class="btn btn-orange btn-block" id="submit-order">Place order</button>
+  </div>`;
+}
+
+function renderConfirmation(){
+  const b = STATE.confirmedBooking;
+  const msg = `Hello Yola Express, I have submitted booking ${b.id}. Please confirm my request.`;
+  return `<div class="confirm-box">
+    <div class="confirm-icon">${ic('check',24,'#0F1E3D')}</div>
+    <h2 class="confirm-title">Order placed!</h2>
+    <p class="confirm-sub">We'll contact you shortly on ${escapeHtml(b.customer.phone)} to confirm pickup.</p>
+    <div class="booking-id-box"><div class="lbl">Booking ID</div><div class="val">${b.id}</div></div>
+    <div class="confirm-btns">
+      <a class="btn btn-dark" href="${waLink(msg)}" target="_blank" rel="noopener">${ic('wa',15,'#fff')}Notify us on WhatsApp</a>
+      <button class="btn btn-white" id="place-another">Place another order</button>
+    </div>
+  </div>`;
+}
+
+function renderTrackSection(){
+  return `
+  <div class="track-toggle"><button id="toggle-track">${STATE.showTrack?"Hide order tracking":"Already ordered? Track it"}</button></div>
+  ${STATE.showTrack ? `<div class="track-panel">
+    <div class="field-grid2">${field("Booking ID","trackId",STATE.trackId||"",{ph:"YED-20260909-46227"})}${field("Phone number","trackPhone",STATE.trackPhone||"",{ph:"Phone used to order", type:"tel"})}</div>
+    <button class="btn btn-dark btn-block" id="do-track">Check status</button>
+    ${STATE.trackError?`<div class="errtext" style="margin-top:10px;">${STATE.trackError}</div>`:""}
+    ${STATE.trackResult?renderTrackResult(STATE.trackResult):""}
+  </div>` : ""}`;
+}
+
+function renderTrackResult(b){
+  return `<div class="track-result">
+    <div class="track-dot ${trackDotClass(b.status)}"></div>
+    <div><div class="track-status">${b.status}</div><div class="track-route">${escapeHtml(b.pickup.address)} → ${escapeHtml(b.delivery.address)}</div></div>
+  </div>`;
+}
+
+/* ---------------- HANDLERS ---------------- */
+function attachHandlers(){
+  document.querySelectorAll("[data-nav]").forEach(el=>el.addEventListener("click", ()=>{ STATE.view = el.getAttribute("data-nav"); window.scrollTo(0,0); render(); }));
+  document.querySelectorAll("[data-selectsvc]").forEach(el=>el.addEventListener("click", ()=>selectService(el.getAttribute("data-selectsvc"))));
+  const changeSvc = document.getElementById("change-svc");
+  if(changeSvc) changeSvc.addEventListener("click", ()=>{ STATE.selectedService=null; STATE.order=null; render(); });
+
+  document.querySelectorAll("[data-field]").forEach(el=>{
+    el.addEventListener("input", ()=>{
+      const name = el.getAttribute("data-field");
+      if(name==="trackId") STATE.trackId = el.value;
+      else if(name==="trackPhone") STATE.trackPhone = el.value;
+      else if(STATE.order && name in STATE.order) STATE.order[name] = el.value;
+    });
+  });
+
+  const submitBtn = document.getElementById("submit-order");
+  if(submitBtn) submitBtn.addEventListener("click", ()=>{ submitBtn.disabled=true; submitOrder(); });
+  const placeAnother = document.getElementById("place-another");
+  if(placeAnother) placeAnother.addEventListener("click", newOrderReset);
+
+  const toggleTrack = document.getElementById("toggle-track");
+  if(toggleTrack) toggleTrack.addEventListener("click", ()=>{ STATE.showTrack = !STATE.showTrack; render(); });
+  const doTrack = document.getElementById("do-track");
+  if(doTrack) doTrack.addEventListener("click", ()=>{
+    const id = (STATE.trackId||"").trim().toUpperCase();
+    const phone = (STATE.trackPhone||"").trim();
+    if(!id || !phone){ STATE.trackError="Please enter both booking ID and phone number."; STATE.trackResult=null; render(); return; }
+    const found = STATE.bookings.find(b=> b.id.toUpperCase()===id && (b.customer.phone||"").trim()===phone);
+    if(!found){ STATE.trackError="No booking found with those details."; STATE.trackResult=null; }
+    else { STATE.trackError=""; STATE.trackResult=found; }
+    render();
+  });
+}
+
+/* ================= ADMIN ================= */
+function renderAdmin(){
+  if(!STATE.adminAuthed) return renderAdminLogin();
+  return `<div class="admin-shell">
+    <div class="admin-top"><div class="admin-wrap" style="display:flex;justify-content:space-between;align-items:center;">
+      <div class="brand" data-nav="site"><div class="brandmark"><img src="${LOGO_URI}" alt="Yola Express Delivery logo"></div><div class="brandtext" style="color:#fff;">Staff dashboard</div></div>
+      <button class="btn outline-light btn-block" id="admin-logout" style="width:auto;padding:9px 14px;font-size:12.5px;">Log out</button>
+    </div></div>
+    <div class="admin-wrap">
+      <div class="admin-tabs">
+        ${[["dashboard","Overview"],["bookings","Bookings"],["services","Services"],["settings","Settings"]].map(([id,lbl])=>`<button class="atab ${STATE.adminTab===id?'active':''}" data-atab="${id}">${lbl}</button>`).join("")}
+      </div>
+      ${STATE.adminTab==="dashboard"?renderAdminDashboard():""}
+      ${STATE.adminTab==="bookings"?renderAdminBookings():""}
+      ${STATE.adminTab==="services"?renderAdminServices():""}
+      ${STATE.adminTab==="settings"?renderAdminSettings():""}
+    </div>
+    ${STATE.modal?renderModal():""}
+    ${STATE.toast ? `<div class="toast">${escapeHtml(STATE.toast)}</div>` : ""}
+  </div>`;
+}
+function renderAdminLogin(){
+  const pin = STATE.adminPinDraft||"";
+  return `<div class="admin-shell"><div class="pin-wrap">
+    <div class="brandmark" style="margin:0 auto 14px;width:64px;height:64px;"><img src="${LOGO_URI}" alt="Yola Express Delivery logo"></div>
+    <h2 style="font-size:18px;">Staff login</h2>
+    <div style="color:var(--muted);font-size:13px;margin-top:6px;">Enter the 4-digit staff PIN</div>
+    <div class="pin-dots">${[0,1,2,3].map(i=>`<div class="d ${pin.length>i?'filled':''}"></div>`).join("")}</div>
+    ${STATE.adminError?`<div class="errtext" style="margin-bottom:10px;">${STATE.adminError}</div>`:""}
+    <div class="pinpad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="pinkey" data-pin="${n}">${n}</button>`).join("")}<button class="pinkey" data-pin="clear">C</button><button class="pinkey" data-pin="0">0</button><button class="pinkey" data-pin="back">⌫</button></div>
+    <button class="btn btn-white btn-block" data-nav="site" style="margin-top:24px;max-width:260px;margin-left:auto;margin-right:auto;">Back to site</button>
+    <div style="font-size:11.5px;color:var(--muted);margin-top:14px;">Default PIN is 1234 — change it from Settings after logging in.</div>
+  </div></div>`;
+}
+function renderAdminDashboard(){
+  const total = STATE.bookings.length;
+  const pending = STATE.bookings.filter(b=>b.status==="Pending").length;
+  const active = STATE.bookings.filter(b=>!["Pending","Delivered","Completed","Cancelled"].includes(b.status)).length;
+  const completed = STATE.bookings.filter(b=>b.status==="Completed"||b.status==="Delivered").length;
+  const cancelled = STATE.bookings.filter(b=>b.status==="Cancelled").length;
+  return `<div class="stat-grid">
+    <div class="stat-card"><div class="num">${total}</div><div class="lbl">Total orders</div></div>
+    <div class="stat-card"><div class="num">${pending}</div><div class="lbl">Pending</div></div>
+    <div class="stat-card"><div class="num">${active}</div><div class="lbl">Active</div></div>
+    <div class="stat-card"><div class="num">${completed}</div><div class="lbl">Completed</div></div>
+    <div class="stat-card"><div class="num">${cancelled}</div><div class="lbl">Cancelled</div></div>
+  </div>
+  <div style="padding:22px 0;"><h3 style="font-size:16px;margin-bottom:12px;">Recent orders</h3>
+  ${STATE.bookings.slice(0,6).map(renderBookingRow).join("") || `<div class="empty"><div class="em">📭</div>No orders yet.</div>`}</div>`;
+}
+function renderBookingRow(b){
+  const svc = svcById(b.service);
+  return `<div class="b-row" data-openbooking="${b.id}">
+    <div class="top"><div><div class="idtxt">${b.id}</div><div class="meta">${svc?escapeHtml(svc.name):""} · ${fmtDate(b.createdAt)}</div></div><span class="badge ${statusBadgeClass(b.status)}">${b.status}</span></div>
+    <div class="who">${escapeHtml(b.customer.name)} · ${escapeHtml(b.customer.phone)}</div>
+  </div>`;
+}
+function renderAdminBookings(){
+  const filter = STATE.bookingFilter || "all";
+  let list = STATE.bookings.slice();
+  if(filter!=="all") list = list.filter(b=>b.status===filter);
+  return `<div style="padding:20px 0;">
+    <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:16px;">
+      ${["all",...STATUS_FLOW,"Cancelled"].map(s=>`<button class="atab ${filter===s?'active':''}" data-bfilter="${s}" style="flex-shrink:0;">${s==="all"?"All":s}</button>`).join("")}
+    </div>
+    ${list.length? list.map(renderBookingRow).join("") : `<div class="empty"><div class="em">📭</div>No orders match this filter.</div>`}
+  </div>`;
+}
+function renderAdminServices(){
+  return `<div style="padding:20px 0;">
+    <h3 style="font-size:16px;margin-bottom:4px;">Services & pricing</h3>
+    <p style="font-size:13px;color:var(--muted);margin:0 0 16px;">Toggle availability and update pricing.</p>
+    ${STATE.services.map(s=>`<div class="svc-admin-row">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <div style="display:flex;gap:10px;align-items:center;">${ic(s.icon,18)}<strong style="font-size:13.5px;">${escapeHtml(s.name)}</strong></div>
+        <button class="toggle ${s.active?'on':''}" data-svctoggle="${s.id}"><div class="knob"></div></button>
+      </div>
+      <div class="field" style="margin-bottom:8px;"><label>Pricing type</label>
+        <select data-svcpricetype="${s.id}">
+          <option value="fixed" ${s.pricing.type==='fixed'?'selected':''}>Fixed price</option>
+          <option value="quote" ${s.pricing.type==='quote'?'selected':''}>Request a quote</option>
+        </select>
+      </div>
+      ${s.pricing.type==='fixed' ? `<div class="field" style="margin-bottom:0;"><label>Amount (₦)</label><input type="number" data-svcprice="${s.id}" value="${s.pricing.amount||0}"></div>` : ""}
+    </div>`).join("")}
+  </div>`;
+}
+function renderAdminSettings(){
+  const s = STATE.settings;
+  return `<div style="padding:20px 0;">
+    <h3 style="font-size:16px;margin-bottom:12px;">Contact</h3>
+    <div class="card" style="margin-bottom:20px;">${field("Support email","set.contactEmail",s.contactEmail,{ph:"orders@yolaexpress.com"})}</div>
+    <h3 style="font-size:16px;margin-bottom:12px;">Staff PIN</h3>
+    <div class="card">${field("4-digit PIN","set.adminPin",s.adminPin,{ph:"1234"})}</div>
+    <button class="btn btn-dark btn-block" id="save-settings" style="margin-top:16px;">Save settings</button>
+  </div>`;
+}
+function renderModal(){ if(STATE.modal.type==="bookingDetail") return renderBookingModal(STATE.modal.id); return ""; }
+function renderBookingModal(id){
+  const b = STATE.bookings.find(x=>x.id===id); if(!b) return "";
+  const svc = svcById(b.service);
+  return `<div class="modal-bg" id="modal-bg"><div class="modal">
+    <div class="modal-head"><div><div class="idtxt" style="font-size:14px;">${b.id}</div><div class="meta" style="font-size:11.5px;color:var(--muted);">${fmtDate(b.createdAt)}</div></div><button class="modal-close" id="modal-close">✕</button></div>
+    <div class="card" style="margin-bottom:14px;">
+      <div class="summary-row"><div class="k">Service</div><div class="v">${svc?escapeHtml(svc.name):""}</div></div>
+      <div class="summary-row"><div class="k">Name</div><div class="v">${escapeHtml(b.customer.name)}</div></div>
+      <div class="summary-row"><div class="k">Phone</div><div class="v">${escapeHtml(b.customer.phone)}</div></div>
+      <div class="summary-row"><div class="k">Pickup</div><div class="v">${escapeHtml(b.pickup.address)}</div></div>
+      <div class="summary-row"><div class="k">Receiver</div><div class="v">${escapeHtml(b.delivery.receiverName)} · ${escapeHtml(b.delivery.receiverPhone)}</div></div>
+      <div class="summary-row"><div class="k">Delivery to</div><div class="v">${escapeHtml(b.delivery.address)}</div></div>
+      ${b.details.description?`<div class="summary-row"><div class="k">Notes</div><div class="v">${escapeHtml(b.details.description)}</div></div>`:""}
+    </div>
+    <div style="font-size:12px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;">Update status</div>
+    <div class="status-select-grid">
+      ${STATUS_FLOW.map(s=>`<button class="stbtn ${b.status===s?'active':''}" data-setstatus="${s}">${s}</button>`).join("")}
+      <button class="stbtn ${b.status==='Cancelled'?'active':''}" data-setstatus="Cancelled" style="grid-column:span 2;color:var(--danger);">Cancel order</button>
+    </div>
+    <div class="field" style="margin-top:16px;"><label>Assign rider</label><input id="rider-input" type="text" value="${escapeHtml(b.rider||"")}" placeholder="Rider name"></div>
+    <button class="btn btn-white btn-block" id="save-rider" style="margin-bottom:10px;">Save rider</button>
+    <a class="btn btn-dark btn-block" href="tel:${escapeHtml(b.customer.phone)}">Call customer</a>
+  </div></div>`;
+}
+function attachAdminHandlers(){
+  document.querySelectorAll("[data-nav]").forEach(el=>el.addEventListener("click", ()=>{ STATE.view=el.getAttribute("data-nav"); window.scrollTo(0,0); render(); }));
+  const logout = document.getElementById("admin-logout");
+  if(logout) logout.addEventListener("click", ()=>{ STATE.adminAuthed=false; STATE.adminPinDraft=""; render(); });
+  document.querySelectorAll("[data-pin]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      const v = el.getAttribute("data-pin");
+      if(v==="clear") STATE.adminPinDraft="";
+      else if(v==="back") STATE.adminPinDraft = STATE.adminPinDraft.slice(0,-1);
+      else if(STATE.adminPinDraft.length<4) STATE.adminPinDraft += v;
+      if(STATE.adminPinDraft.length===4){
+        if(STATE.adminPinDraft===STATE.settings.adminPin){ STATE.adminAuthed=true; STATE.adminError=""; STATE.adminPinDraft=""; }
+        else { STATE.adminError="Incorrect PIN. Try again."; STATE.adminPinDraft=""; }
+      }
+      render();
+    });
+  });
+  document.querySelectorAll("[data-atab]").forEach(el=>el.addEventListener("click", ()=>{ STATE.adminTab = el.getAttribute("data-atab"); render(); }));
+  document.querySelectorAll("[data-bfilter]").forEach(el=>el.addEventListener("click", ()=>{ STATE.bookingFilter = el.getAttribute("data-bfilter"); render(); }));
+  document.querySelectorAll("[data-openbooking]").forEach(el=>el.addEventListener("click", ()=>{ STATE.modal = {type:"bookingDetail", id:el.getAttribute("data-openbooking")}; render(); }));
+  const modalBg = document.getElementById("modal-bg");
+  if(modalBg) modalBg.addEventListener("click", (e)=>{ if(e.target.id==="modal-bg"){ STATE.modal=null; render(); } });
+  const modalClose = document.getElementById("modal-close");
+  if(modalClose) modalClose.addEventListener("click", ()=>{ STATE.modal=null; render(); });
+  document.querySelectorAll("[data-setstatus]").forEach(el=>el.addEventListener("click", async ()=>{ const b = STATE.bookings.find(x=>x.id===STATE.modal.id); b.status = el.getAttribute("data-setstatus"); await persistBookings(); render(); }));
+  const saveRider = document.getElementById("save-rider");
+  if(saveRider) saveRider.addEventListener("click", async ()=>{ const b = STATE.bookings.find(x=>x.id===STATE.modal.id); b.rider = document.getElementById("rider-input").value; await persistBookings(); showToast("Rider saved."); });
+  document.querySelectorAll("[data-svctoggle]").forEach(el=>el.addEventListener("click", async ()=>{ const s = svcById(el.getAttribute("data-svctoggle")); s.active = !s.active; await persistServices(); render(); }));
+  document.querySelectorAll("[data-svcpricetype]").forEach(el=>el.addEventListener("change", async ()=>{ const s = svcById(el.getAttribute("data-svcpricetype")); s.pricing.type = el.value; if(el.value==="fixed" && !s.pricing.amount) s.pricing.amount=0; await persistServices(); render(); }));
+  document.querySelectorAll("[data-svcprice]").forEach(el=>el.addEventListener("input", async ()=>{ const s = svcById(el.getAttribute("data-svcprice")); s.pricing.amount = Number(el.value)||0; await persistServices(); }));
+  document.querySelectorAll("[data-field]").forEach(el=>el.addEventListener("input", ()=>{ const path = el.getAttribute("data-field"); if(path.startsWith("set.")) STATE.settings[path.split(".")[1]] = el.value; }));
+  const saveSettings = document.getElementById("save-settings");
+  if(saveSettings) saveSettings.addEventListener("click", async ()=>{ await persistSettings(); showToast("Settings saved."); });
+}
+
+/* ---------------- INIT ---------------- */
+(function setFavicon(){
+  try{
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.href = LOGO_URI;
+    document.head.appendChild(link);
+  }catch(e){}
+})();
+loadAll();
+
+})();
+</script>
+</body>
+</html>
